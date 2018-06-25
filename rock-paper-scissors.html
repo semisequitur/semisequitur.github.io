@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Rock Paper Scissors</title>
+  </head>
+  <body>
+
+<script>
+let wins = 0;
+let losses = 0;
+let ties = 0;
+game();
+
+function game (){
+  for (i = 1; i < 6; i++) {
+    var playerEntry = prompt('Rock, paper, or scissors?');
+    var playerSelection = playerEntry.toLowerCase();
+    var computerSelection = computerPlay();
+    console.log ('Round #' + i);
+    console.log('Player: ' + playerSelection);
+		console.log('Computer: ' + computerSelection);
+		console.log('Result: ' + playRound(playerSelection, computerSelection));
+		console.log('');
+  }
+  console.log('Your final score');
+  console.log('Wins: ' + wins + '  Losses: ' + losses + '  Ties: ' + ties);
+  console.log(finalScore());
+}
+
+function finalScore () {
+if (wins > losses) {
+  return 'Player beats computer.'
+}
+else if (losses > wins) {
+  return 'Computer beats player.'
+}
+else {
+  return 'Tie game.';
+}
+}
+
+function computerPlay () {
+  let choices = ['rock','paper','scissors']
+  let pick = choices[Math.floor(Math.random() * 3)];
+  return pick;
+}
+
+function playRound (playerSelection, computerSelection) {
+let picks = playerSelection + computerSelection;
+switch (picks) {
+  case 'rockrock':
+  ties = ties + 1;
+  return 'Tie! Rock vs rock.'
+  break;
+  case 'rockpaper':
+  losses = losses + 1;
+  return 'You lose! Paper beats rock.'
+  break;
+  case 'rockscissors':
+  wins = wins + 1;
+  return 'You win! Rock beats scissors.'
+  break;
+  case 'paperrock':
+  wins = wins + 1;
+  return 'You win! Paper beats rock.'
+  break;
+  case 'paperpaper':
+  ties = ties + 1;
+  return 'Tie! Paper vs paper.'
+  break;
+  case 'paperscissors':
+  losses = losses + 1;
+  return 'You lose! Scissors beats paper.'
+  break;
+  case 'scissorsrock':
+  losses = losses + 1;
+  return 'You lose! Rock beats scissors.'
+  break;
+  case 'scissorspaper':
+  wins = wins + 1;
+  return 'You win! Scissors beats paper.'
+  break;
+  case 'scissorsscissors':
+  ties = ties + 1;
+  return 'Tie! Scissors vs scissors.'
+  break;
+}
+}
+
+</script>
+
+</body>
+</html>
