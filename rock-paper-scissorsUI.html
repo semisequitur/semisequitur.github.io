@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Rock Paper Scissors</title>
+
+<style type="text/css">
+html {
+  font-size: 10px;
+  background: url(https://i.imgur.com/d8KrA2e.jpg) bottom center;
+  background-size: cover;
+}
+
+body,html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+#results {
+position: absolute;
+width: 290px;
+height: 125px;
+top: 50%;
+left: 50%;
+margin-left: -153px;
+background-color: rgba(255, 255, 255, 0.8);
+padding: 10px;
+font-size: 14px;
+font-family: monospace;
+}
+
+#reset {
+  color: #003399;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.keys {
+position: absolute;
+width: 414px;
+height: 105px;
+top: 50%;
+left: 50%;
+margin-left: -207px;
+margin-top: -130px;
+display: flex;
+}
+
+.key {
+  border: .4rem solid black;
+  border-radius: .5rem;
+  margin: 1rem;
+  font-size: 1.5rem;
+  padding: 1rem .5rem;
+  transition: all 0.1s ease;
+  width: 10rem;
+  text-align: center;
+  color: white;
+  background: rgba(0,0,0,0.4);
+  text-shadow: 0 0 .5rem black;
+  cursor: pointer;
+}
+
+.clicked {
+  transform: scale(1.1);
+  border-color: #99FFFF;
+  box-shadow: 0 0 0.3rem #99FFFF;
+}
+
+.mono {
+  font-family: monospace;
+  display: block;
+  font-size: 4rem;
+}
+
+.label {
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: .1rem;
+  color: #99FFFF;
+}
+
+</style>
+
+
+
+  </head>
+  <body>
+
+    <div class="keys">
+      <div id="rock" class="key">
+        <span class="mono">O</span>
+        <span class="label">rock</span>
+      </div>
+      <div id="paper" class="key">
+        <span class="mono">[]</span>
+        <span class="label">paper</span>
+      </div>
+      <div id="scissors" class="key">
+        <span class="mono">X</span>
+        <span class="label">scissors</span>
+      </div>
+    </div>
+
+    <div id="results">
+Round <span id="roundNumber"></span>:<br />
+Player: <span id="playerPick"></span>, Computer: <span id="computerPick"></span><br />
+<span id="roundResult"></span><br /><br />
+Total wins: <span id="winTotal"></span>, losses: <span id="lossTotal"></span>, ties: <span id="tieTotal"></span><br />
+<span id="finalResult"></span><br /><br />
+<a id="reset"></a>
+    </div>
+
+
+
+<script>
+let wins = 0;
+let losses = 0;
+let ties = 0;
+let round = 1;
+
+const keys = document.querySelectorAll('.key');
+const results = document.querySelector('#results');
+const roundNumber = document.querySelector('#roundNumber');
+const playerPick = document.querySelector('#playerPick');
+const computerPick = document.querySelector('#computerPick');
+const roundResult = document.querySelector('#roundResult');
+const winTotal = document.querySelector('#winTotal');
+const lossTotal = document.querySelector('#lossTotal');
+const tieTotal = document.querySelector('#tieTotal');
+const finalResult = document.querySelector('#finalResult');
+const reset = document.querySelector('#reset');
+
+keys.forEach((div) => {
+  div.addEventListener('click', () => {
+    playerSelection = div.id;
+  });
+  div.addEventListener('click', brighter);
+  div.addEventListener('transitionend', (e) => {
+    if (e.propertyName !== 'transform') return;
+    div.classList.remove('clicked');
+  });
+  div.addEventListener('click', game);
+});
+
+function brighter() {
+  this.classList.add('clicked');
+}
+
+document.getElementById('reset').addEventListener('click', resetGame);
+
+function game() {
+  let computerSelection = computerPlay();
+  roundNumber.textContent = `${round}`;
+  playerPick.textContent = `${playerSelection}`;
+  computerPick.textContent = `${computerSelection}`;
+
+  roundResult.textContent = oneRound(playerSelection,computerSelection);
+  round++;
+
+  if (wins === 5 || losses === 5) {
+    finalScore();
+    keys.forEach((div) => {
+      div.removeEventListener('click', game);
+      div.removeEventListener('click', brighter);
+    });
+  }
+}
+
+function oneRound (playerSelection, computerSelection) {
+let picks = playerSelection + computerSelection;
+switch (picks) {
+  case 'rockrock':
+  ties++;
+  tieTotal.textContent = `${ties}`;
+  return 'Tie! Rock vs rock.'
+  break;
+  case 'rockpaper':
+  losses++;
+  lossTotal.textContent = `${losses}`;
+  return 'You lose! Paper beats rock.'
+  break;
+  case 'rockscissors':
+  wins++;
+  winTotal.textContent = `${wins}`;
+  return 'You win! Rock beats scissors.'
+  break;
+  case 'paperrock':
+  wins++;
+  winTotal.textContent = `${wins}`;
+  return 'You win! Paper beats rock.'
+  break;
+  case 'paperpaper':
+  ties++;
+  tieTotal.textContent = `${ties}`;
+  return 'Tie! Paper vs paper.'
+  break;
+  case 'paperscissors':
+  losses++;
+  lossTotal.textContent = `${losses}`;
+  return 'You lose! Scissors beats paper.'
+  break;
+  case 'scissorsrock':
+  losses++;
+  lossTotal.textContent = `${losses}`;
+  return 'You lose! Rock beats scissors.'
+  break;
+  case 'scissorspaper':
+  wins++;
+  winTotal.textContent = `${wins}`;
+  return 'You win! Scissors beats paper.'
+  break;
+  case 'scissorsscissors':
+  ties++;
+  tieTotal.textContent = `${ties}`;
+  return 'Tie! Scissors vs scissors.'
+  break;
+}
+}
+
+function finalScore () {
+if (wins > losses) {
+  finalResult.textContent = 'Player beats computer.'
+}
+else if (losses > wins) {
+ finalResult.textContent =  'Computer beats player.'
+}
+else {
+  finalResult.textContent = 'Tie game.';
+}
+reset.textContent = 'Play again';
+}
+
+function computerPlay () {
+  let choices = ['rock','paper','scissors']
+  let pick = choices[Math.floor(Math.random() * 3)];
+  return pick;
+}
+
+function resetGame () {
+  wins = 0;
+  losses = 0;
+  ties = 0;
+  round = 1;
+  roundNumber.textContent = `${round}`;
+  winTotal.textContent = '';
+  lossTotal.textContent = '';
+  tieTotal.textContent = '';
+  playerPick.textContent = '';
+  computerPick.textContent = '';
+  roundResult.textContent = '';
+  finalResult.textContent = '';
+  keys.forEach((div) => {
+    div.addEventListener('click', () => {
+      playerSelection = div.id;
+    });
+    div.addEventListener('click', brighter);
+    div.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'transform') return;
+      div.classList.remove('clicked');
+    });
+    div.addEventListener('click', game);
+  });
+  reset.textContent = '';
+}
+
+</script>
+
+</body>
+</html>
